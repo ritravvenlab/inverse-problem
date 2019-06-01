@@ -24,20 +24,19 @@ Tcamera = SE3.Ry(90,'deg') * SE3.Rz(90,'deg');
 % set the corners for the object with the pose listed above
 corners = [ 0  0   0   0;
            .1 -.1 -.1 .1;
-           .1 .1 -.1 -.1;] .* .1;       
+           .1 .1 -.1 -.1;];       
         
 % create default camera
 cam = CentralCamera('default');
 
 % project the corners onto the camera focal plane
-p = cam.project(corners,'objpose',Tapril, 'pose', Tquad*Tcamera)
+p = cam.plot(corners,'objpose',Tapril, 'pose', Tquad*Tcamera)
 
 figure
-scatter(p(1,:),p(2,:));
-figure
+%scatter(p(1,:),p(2,:));
 plot(Tapril,'color','r')
 hold on
-plot(Tquad * Tcamera,'color','b')
-%plot(Tquad,'color','g')
+%plot(Tquad * Tcamera,'color','b')
+plot(Tquad,'color','g')
 set(gca, 'Zdir', 'reverse')
 set(gca, 'Ydir', 'reverse')
