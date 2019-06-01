@@ -14,7 +14,7 @@
 
 % translation in meters and rotation in degrees
 % x,y,z roll, pitch, yaw [NED reference frame]
-pose = [-1 0 0 45 0 0];
+pose = [-1 0 0 0 0 0];
 
 % create object with a given pose 
 Tapril = SE3(0,0,0);
@@ -24,19 +24,28 @@ Tcamera = SE3.Ry(90,'deg') * SE3.Rz(90,'deg');
 % set the corners for the object with the pose listed above
 corners = [ 0  0   0   0;
            .1 -.1 -.1 .1;
-           .1 .1 -.1 -.1;];       
+           .1 .1 -.1 -.1;];  
+       
+ball =     [ 0 .5 0]';
         
 % create default camera
 cam = CentralCamera('default');
 
 % project the corners onto the camera focal plane
-p = cam.plot(corners,'objpose',Tapril, 'pose', Tquad*Tcamera)
+p = cam.plot(corners,'objpose',Tapril, 'pose', Tquad*Tcamera);
 
 figure
-%scatter(p(1,:),p(2,:));
 plot(Tapril,'color','r')
 hold on
-%plot(Tquad * Tcamera,'color','b')
 plot(Tquad,'color','g')
 set(gca, 'Zdir', 'reverse')
 set(gca, 'Ydir', 'reverse')
+
+% generate homography
+% homography is only for planes so it only works on x,y data.
+
+h = homography(corners(2:3,:),p);
+
+cornersInvert = h2e(inv(h)*e2h(p));
+
+inversionError = corners(2:3,:) - cornersInvert
